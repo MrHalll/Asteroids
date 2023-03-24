@@ -1,20 +1,19 @@
 package controller;
 
 import model.Game;
-import model.characters.Asteroid;
 import model.characters.Character;
-import model.characters.Projectile;
-import model.characters.Ship;
-import view.MainApplication;
+
 
 import java.util.Collection;
 import java.util.List;
 
 public class Controller {
     private Game game;
-
-    public void startGame(int width, int height){
+    public Controller(int width, int height){
         game = new Game(width, height);
+    }
+
+    public void startGame(){
         game.start();
     }
 
@@ -40,5 +39,17 @@ public class Controller {
 
     public List<Character> getProjectiles() {
         return game.getProjectiles();
+    }
+
+    public int getPoints() {
+        return game.getPoints();
+    }
+
+    public void addPoints(){
+        game.addPoints();
+    }
+
+    public boolean isRunning(){
+        return game.isRunning();
     }
 }
