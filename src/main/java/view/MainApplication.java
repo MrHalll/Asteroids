@@ -3,13 +3,8 @@ package view;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import model.Asteroid;
 import model.Projectile;
@@ -21,8 +16,8 @@ import java.util.stream.Collectors;
 
 public class MainApplication extends Application {
 
-    public static int WIDTH = 300;
-    public static int HEIGHT = 200;
+    public static int WIDTH = 500;
+    public static int HEIGHT = 400;
     @Override
     public void start(Stage stage) throws IOException {
         Pane pane = new Pane();
@@ -57,7 +52,8 @@ public class MainApplication extends Application {
 
 
         new AnimationTimer() {
-
+            private long lastProjectileTime = 0;
+            private long projectileDelay = 300_000_000;
             @Override
             public void handle(long now) {
                 if(pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
@@ -70,9 +66,14 @@ public class MainApplication extends Application {
 
                 if(pressedKeys.getOrDefault(KeyCode.UP, false)) {
                     ship.accelerate();
+                } else {
+                    if(ship.getMovement().magnitude() > 0) {
+                        ship.slowDown();
+                    }
                 }
 
-                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && projectiles.size() < 3) {
+
+                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && projectiles.size() < 5  && now - lastProjectileTime > projectileDelay) {
                     // we shoot
                     Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
                     projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
@@ -82,6 +83,8 @@ public class MainApplication extends Application {
                     projectile.setMovement(projectile.getMovement().normalize().multiply(3));
 
                     pane.getChildren().add(projectile.getCharacter());
+
+                    lastProjectileTime = now;
                 }
 
 

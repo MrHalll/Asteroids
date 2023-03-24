@@ -1,70 +1,97 @@
 package model;
 
-import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import view.MainApplication;
 
 public abstract class Character {
-    private Polygon character;
+    private Polygon getCharacter;
     private Point2D movement;
 
     private boolean alive = true;
 
     public Character(Polygon polygon, int x, int y) {
-        this.character = polygon;
-        this.character.setTranslateX(x);
-        this.character.setTranslateY(y);
+        this.getCharacter = polygon;
+        this.getCharacter.setTranslateX(x);
+        this.getCharacter.setTranslateY(y);
 
         this.movement = new Point2D(0, 0);
     }
 
     public Polygon getCharacter() {
-        return character;
+        return getCharacter;
     }
 
     public void turnLeft() {
-        this.character.setRotate(this.character.getRotate() - 5);
+        this.getCharacter.setRotate(this.getCharacter.getRotate() - 5);
     }
 
     public void turnRight() {
-        this.character.setRotate(this.character.getRotate() + 5);
+        this.getCharacter.setRotate(this.getCharacter.getRotate() + 5);
     }
 
     public void move() {
-        this.character.setTranslateX(this.character.getTranslateX() + this.movement.getX());
-        this.character.setTranslateY(this.character.getTranslateY() + this.movement.getY());
+        this.getCharacter.setTranslateX(this.getCharacter.getTranslateX() + this.movement.getX());
+        this.getCharacter.setTranslateY(this.getCharacter.getTranslateY() + this.movement.getY());
 
-        if (this.character.getTranslateX() < 0) {
-            this.character.setTranslateX(this.character.getTranslateX() + MainApplication.WIDTH);
+        if (this.getCharacter.getTranslateX() < 0) {
+            this.getCharacter.setTranslateX(this.getCharacter.getTranslateX() + MainApplication.WIDTH);
         }
 
-        if (this.character.getTranslateX() > MainApplication.WIDTH) {
-            this.character.setTranslateX(this.character.getTranslateX() % MainApplication.WIDTH);
+        if (this.getCharacter.getTranslateX() > MainApplication.WIDTH) {
+            this.getCharacter.setTranslateX(this.getCharacter.getTranslateX() % MainApplication.WIDTH);
         }
 
-        if (this.character.getTranslateY() < 0) {
-            this.character.setTranslateY(this.character.getTranslateY() + MainApplication.HEIGHT);
+        if (this.getCharacter.getTranslateY() < 0) {
+            this.getCharacter.setTranslateY(this.getCharacter.getTranslateY() + MainApplication.HEIGHT);
         }
 
-        if (this.character.getTranslateY() > MainApplication.HEIGHT) {
-            this.character.setTranslateY(this.character.getTranslateY() % MainApplication.HEIGHT);
+        if (this.getCharacter.getTranslateY() > MainApplication.HEIGHT) {
+            this.getCharacter.setTranslateY(this.getCharacter.getTranslateY() % MainApplication.HEIGHT);
         }
     }
 
     public void accelerate() {
-        double changeX = Math.cos(Math.toRadians(this.character.getRotate()));
-        double changeY = Math.sin(Math.toRadians(this.character.getRotate()));
+        double changeX = Math.cos(Math.toRadians(this.getCharacter.getRotate()));
+        double changeY = Math.sin(Math.toRadians(this.getCharacter.getRotate()));
 
         changeX *= 0.05;
         changeY *= 0.05;
 
-        this.movement = this.movement.add(changeX, changeY);
+        double currentSpeed = this.movement.add(changeX, changeY).magnitude();
+        double topSpeed = 4.0;
+        System.out.println(currentSpeed);
+
+        if (currentSpeed < topSpeed) {
+            this.movement = this.movement.add(changeX, changeY);
+        }
+
+
+    }
+
+    public void slowDown() {
+        double deceleration = 0.04; // adjust this value as needed
+        double currentSpeed = this.movement.magnitude();
+
+        if (currentSpeed > deceleration) {
+            double newSpeed = currentSpeed - deceleration;
+            Point2D newMovement = this.movement.normalize().multiply(newSpeed);
+
+            // prevent going backwards
+            if (newMovement.dotProduct(this.movement) < 0) {
+                newMovement = new Point2D(0, 0);
+            }
+
+            this.movement = newMovement;
+        } else {
+            // stop the ship
+            this.movement = new Point2D(0, 0);
+        }
     }
 
     public boolean collide(Character other) {
-        Shape collisionArea = Shape.intersect(this.character, other.getCharacter());
+        Shape collisionArea = Shape.intersect(this.getCharacter, other.getCharacter());
         return collisionArea.getBoundsInLocal().getWidth() != -1;
     }
 
