@@ -1,5 +1,4 @@
-package model;
-import javafx.geometry.Point2D;
+package model.characters;
 import javafx.scene.shape.Polygon;
 
 public class Ship extends Character {

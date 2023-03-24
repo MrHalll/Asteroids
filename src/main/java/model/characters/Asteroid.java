@@ -1,6 +1,6 @@
-package model;
+package model.characters;
 
-import javafx.scene.shape.Polygon;
+import model.PolygonFactory;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class Asteroid extends Character {
 
         Random rnd = new Random();
 
-        super.getCharacter().setRotate(rnd.nextInt(360));
+        super.getShape().setRotate(rnd.nextInt(360));
 
         int accelerationAmount = 1 + rnd.nextInt(10);
         for (int i = 0; i < accelerationAmount; i++) {
@@ -26,7 +26,7 @@ public class Asteroid extends Character {
     @Override
     public void move() {
         super.move();
-        super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
+        super.getShape().setRotate(super.getShape().getRotate() + rotationalMovement);
     }
 
 }

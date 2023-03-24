@@ -1,4 +1,4 @@
-package model;
+package model.characters;
 
 import javafx.scene.shape.Polygon;
 
