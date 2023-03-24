@@ -61,7 +61,6 @@ public abstract class Character {
 
         double currentSpeed = this.movement.add(changeX, changeY).magnitude();
         double topSpeed = 4.0;
-        System.out.println(currentSpeed);
 
         if (currentSpeed < topSpeed) {
             this.movement = this.movement.add(changeX, changeY);

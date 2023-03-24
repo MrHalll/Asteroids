@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Asteroid;
 import model.Projectile;
@@ -24,11 +25,13 @@ public class MainApplication extends Application {
         pane.setPrefSize(WIDTH, HEIGHT);
 
         Ship ship = new Ship(WIDTH / 2, HEIGHT / 2);
+        ship.getCharacter().setStroke(Color.WHITE);
         List<Asteroid> asteroids = new ArrayList<>();
         List<Projectile> projectiles = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Random rnd = new Random();
             Asteroid asteroid = new Asteroid(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
+            asteroid.getCharacter().setStroke(Color.WHITE);
             asteroids.add(asteroid);
         }
 
@@ -38,6 +41,7 @@ public class MainApplication extends Application {
 
         Scene scene = new Scene(pane);
         stage.setTitle("Asteroids!");
+        scene.setFill(Color.BLACK);
         stage.setScene(scene);
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
 
@@ -77,6 +81,7 @@ public class MainApplication extends Application {
                     // we shoot
                     Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
                     projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
+                    projectile.getCharacter().setFill(Color.WHITE);
                     projectiles.add(projectile);
 
                     projectile.accelerate();
@@ -121,8 +126,9 @@ public class MainApplication extends Application {
                         .filter(asteroid -> !asteroid.isAlive())
                         .collect(Collectors.toList()));
 
-                if(Math.random() < 0.005) {
+                if(Math.random() < 0.01) {
                     Asteroid asteroid = new Asteroid(WIDTH, HEIGHT);
+                    asteroid.getCharacter().setStroke(Color.WHITE);
                     if(!asteroid.collide(ship)) {
                         asteroids.add(asteroid);
                         pane.getChildren().add(asteroid.getCharacter());

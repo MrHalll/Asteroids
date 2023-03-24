@@ -15,7 +15,7 @@ public class Asteroid extends Character {
 
         super.getCharacter().setRotate(rnd.nextInt(360));
 
-        int accelerationAmount = 1 + rnd.nextInt(10);
+        int accelerationAmount = 15 + rnd.nextInt(10);
         for (int i = 0; i < accelerationAmount; i++) {
             accelerate();
         }
