@@ -1,5 +1,6 @@
 package model;
 
+import javafx.scene.paint.Color;
 import model.characters.Asteroid;
 import model.characters.Character;
 import model.characters.Projectile;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private static final int POINTS = 0;
+    private int score = 0;
     private List<Character> asteroids;
     private List<Character> projectiles;
     private Character enemyShip;
@@ -25,6 +26,7 @@ public class Game {
 
     public void start(){
         ship = new Ship(width / 2, height / 2);
+        ship.getShape().setStroke(Color.WHITE);
         asteroids = new ArrayList<>();
         projectiles = new ArrayList<>();
 
@@ -32,6 +34,7 @@ public class Game {
         for (int i = 0; i < 5; i++) {
             Random rnd = new Random();
             Asteroid asteroid = new Asteroid(rnd.nextInt(width / 3), rnd.nextInt(height));
+            asteroid.getShape().setStroke(Color.WHITE);
             asteroids.add(asteroid);
         }
     }
@@ -44,6 +47,7 @@ public class Game {
 
     public Character addProjectile(){
         Projectile projectile = new Projectile((int) ship.getX(), (int) ship.getY());
+        projectile.getShape().setFill(Color.WHITE);
         projectile.getShape().setRotate(ship.getShape().getRotate());
         projectiles.add(projectile);
         projectile.accelerate();
@@ -51,8 +55,13 @@ public class Game {
         return projectile;
     }
 
+    public void addScore(){
+        score = score + 10;
+    }
+
     public Character addAsteroid() {
         Asteroid asteroid = new Asteroid(width, height);
+        asteroid.getShape().setStroke(Color.WHITE);
         asteroids.add(asteroid);
         return asteroid;
     }

@@ -6,30 +6,25 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.characters.Asteroid;
 import model.characters.Character;
-import model.characters.Projectile;
-import model.characters.Ship;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainApplication extends Application {
-
-    public static int WIDTH = 300;
-    public static int HEIGHT = 200;
     private Controller controller;
     Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
+    public static int WIDTH = 800;
+    public static int HEIGHT = 600;
 
-    public static int WIDTH = 500;
-    public static int HEIGHT = 400;
     @Override
     public void start(Stage stage) throws IOException {
         Pane pane = new Pane();
         pane.setPrefSize(WIDTH, HEIGHT);
         Scene scene = new Scene(pane);
+        scene.setFill(Color.BLACK);
         stage.setTitle("Asteroids!");
         stage.setScene(scene);
 
@@ -38,7 +33,7 @@ public class MainApplication extends Application {
 
         pane.getChildren().add(controller.getShip().getShape());
 
-        for (Character asteroid: controller.getAsteroids()) {
+        for (Character asteroid : controller.getAsteroids()) {
             pane.getChildren().add(asteroid.getShape());
         }
 
@@ -53,6 +48,7 @@ public class MainApplication extends Application {
         new AnimationTimer() {
             private long lastProjectileTime = 0;
             private long projectileDelay = 300_000_000;
+
             @Override
             public void handle(long now) {
                 if (pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
@@ -65,28 +61,15 @@ public class MainApplication extends Application {
 
                 if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
                     controller.getShip().accelerate();
-                if(pressedKeys.getOrDefault(KeyCode.UP, false)) {
-                    ship.accelerate();
                 } else {
-                    if(ship.getMovement().magnitude() > 0) {
-                        ship.slowDown();
+                    if (controller.getShip().getMovement().magnitude() > 0) {
+                        controller.getShip().slowDown();
                     }
                 }
 
-                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && controller.getProjectiles().size() < 3) {
-
-                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && projectiles.size() < 5  && now - lastProjectileTime > projectileDelay) {
+                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && controller.getProjectiles().size() < 5 && now - lastProjectileTime > projectileDelay) {
                     // we shoot
                     pane.getChildren().add(controller.addProjectile().getShape());
-                    Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
-                    projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
-                    projectiles.add(projectile);
-
-                    projectile.accelerate();
-                    projectile.setMovement(projectile.getMovement().normalize().multiply(3));
-
-                    pane.getChildren().add(projectile.getCharacter());
-
                     lastProjectileTime = now;
                 }
 

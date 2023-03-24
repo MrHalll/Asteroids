@@ -11,10 +11,10 @@ public class Projectile extends Character {
 
     @Override
     public void move() {
-        this.getCharacter().setTranslateX(this.getCharacter().getTranslateX() + this.getMovement().getX());
-        this.getCharacter().setTranslateY(this.getCharacter().getTranslateY() + this.getMovement().getY());
-        if (this.getCharacter().getTranslateX() < 0 || this.getCharacter().getTranslateX() > MainApplication.WIDTH
-        || this.getCharacter().getTranslateY() < 0 || this.getCharacter().getTranslateY() > MainApplication.HEIGHT) {
+        this.getShape().setTranslateX(this.getShape().getTranslateX() + this.getMovement().getX());
+        this.getShape().setTranslateY(this.getShape().getTranslateY() + this.getMovement().getY());
+        if (this.getShape().getTranslateX() < 0 || this.getShape().getTranslateX() > MainApplication.WIDTH
+        || this.getShape().getTranslateY() < 0 || this.getShape().getTranslateY() > MainApplication.HEIGHT) {
             this.setAlive(false);
         }
     }

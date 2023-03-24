@@ -57,7 +57,32 @@ public abstract class Character {
         changeX *= 0.05;
         changeY *= 0.05;
 
-        this.movement = this.movement.add(changeX, changeY);
+        double currentSpeed = this.movement.add(changeX, changeY).magnitude();
+        double topSpeed = 4.0;
+
+        if (currentSpeed < topSpeed) {
+            this.movement = this.movement.add(changeX, changeY);
+        }
+    }
+
+    public void slowDown() {
+        double deceleration = 0.04; // adjust this value as needed
+        double currentSpeed = this.movement.magnitude();
+
+        if (currentSpeed > deceleration) {
+            double newSpeed = currentSpeed - deceleration;
+            Point2D newMovement = this.movement.normalize().multiply(newSpeed);
+
+            // prevent going backwards
+            if (newMovement.dotProduct(this.movement) < 0) {
+                newMovement = new Point2D(0, 0);
+            }
+
+            this.movement = newMovement;
+        } else {
+            // stop the ship
+            this.movement = new Point2D(0, 0);
+        }
     }
 
     public boolean collide(Character other) {
@@ -81,11 +106,11 @@ public abstract class Character {
         return alive;
     }
 
-    public double getX(){
+    public double getX() {
         return shape.getTranslateX();
     }
 
-    public double getY(){
+    public double getY() {
         return shape.getTranslateY();
     }
 }
