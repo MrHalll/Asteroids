@@ -23,6 +23,8 @@ public class MainApplication extends Application {
     private Controller controller;
     Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
 
+    public static int WIDTH = 500;
+    public static int HEIGHT = 400;
     @Override
     public void start(Stage stage) throws IOException {
         Pane pane = new Pane();
@@ -49,7 +51,8 @@ public class MainApplication extends Application {
         });
 
         new AnimationTimer() {
-
+            private long lastProjectileTime = 0;
+            private long projectileDelay = 300_000_000;
             @Override
             public void handle(long now) {
                 if (pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
@@ -62,11 +65,29 @@ public class MainApplication extends Application {
 
                 if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
                     controller.getShip().accelerate();
+                if(pressedKeys.getOrDefault(KeyCode.UP, false)) {
+                    ship.accelerate();
+                } else {
+                    if(ship.getMovement().magnitude() > 0) {
+                        ship.slowDown();
+                    }
                 }
 
                 if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && controller.getProjectiles().size() < 3) {
+
+                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && projectiles.size() < 5  && now - lastProjectileTime > projectileDelay) {
                     // we shoot
                     pane.getChildren().add(controller.addProjectile().getShape());
+                    Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
+                    projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
+                    projectiles.add(projectile);
+
+                    projectile.accelerate();
+                    projectile.setMovement(projectile.getMovement().normalize().multiply(3));
+
+                    pane.getChildren().add(projectile.getCharacter());
+
+                    lastProjectileTime = now;
                 }
 
                 controller.getShip().move();
