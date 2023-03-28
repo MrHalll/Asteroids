@@ -7,12 +7,17 @@ import model.characters.Projectile;
 import model.characters.Ship;
 import model.characters.factories.AsteroidFactory;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private int score = 0;
+    private int points;
+    private boolean isRunning;
     private List<Character> asteroids;
     private List<Character> friendlyProjectiles;
     private List<Character> enemyProjectiles;
@@ -20,13 +25,25 @@ public class Game {
     private Ship ship;
     public int width = 0;
     public int height = 0;
+    private FileWriter fileWriter;
+    private BufferedReader br;
+    private String fileName = "C:\\Users\\melle\\IdeaProjects\\Asteroids\\src\\main\\resources\\highscore.txt";
 
     public Game(int width, int height){
         this.width = width;
         this.height = height;
+        if(fileWriter == null) {
+            try {
+                fileWriter = new FileWriter(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void start(){
+        isRunning = true;
+        points = 0;
         ship = new Ship(width / 2, height / 2);
         ship.getShape().setStroke(Color.WHITE);
         asteroids = new ArrayList<>();
@@ -43,11 +60,36 @@ public class Game {
         }
     }
     public void stop(){
-
+        isRunning = false;
+        if (isHighScore()) {
+            writeHighScore();
+        }
     }
 
+    public boolean isHighScore() {
+        int highScore = 0;
+        try {
+            br = new BufferedReader(new FileReader(fileName));
+            String line = br.readLine();
+            if (line != null) {
+                highScore = Integer.parseInt(line);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return points > highScore;
     }
 
+    public void writeHighScore() {
+        try {
+            fileWriter = new FileWriter(fileName);
+            fileWriter.write(String.valueOf(points));
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public Character makePlayerShoot(){
         Character projectile = getShip().shoot();
         friendlyProjectiles.add(projectile);
@@ -64,8 +106,12 @@ public class Game {
         return projectile;
     }
 
-    public void addScore(){
-        score = score + 10;
+    public int getPoints(){
+        return points;
+    }
+
+    public void addPoints(){
+        points = points + 1000;
     }
 
     public Character addAsteroid() {
@@ -99,5 +145,8 @@ public class Game {
 
     public List<Character> getEnemyShips() {
         return enemyShips;
+    }
+    public boolean isRunning() {
+        return isRunning;
     }
 }

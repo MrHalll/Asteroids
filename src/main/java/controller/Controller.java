@@ -9,9 +9,23 @@ import java.util.List;
 public class Controller {
     private Game game;
 
-    public void startGame(int width, int height){
+    public Controller(int width, int height){
         game = new Game(width, height);
+    }
+    public void startGame(){
         game.start();
+    }
+
+    public int getPoints() {
+        return game.getPoints();
+    }
+
+    public void addPoints(){
+        game.addPoints();
+    }
+
+    public boolean isRunning(){
+        return game.isRunning();
     }
 
     public void stopGame(){
