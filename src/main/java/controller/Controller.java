@@ -16,6 +16,26 @@ public class Controller {
         game.start();
     }
 
+    public int getLevel() {
+        return game.getLevel();
+    }
+
+    public int getNbrOfAsteroids() {
+        return game.getNbrOfAsteroids();
+    }
+
+    public int getNbrOfEnemies() {
+        return game.getNbrOfEnemies();
+    }
+
+    public void levelUp() {
+        game.levelUp();
+    }
+
+    public void spawnObjects() {
+        game.spawnObjects();
+    }
+
     public int getPoints() {
         return game.getPoints();
     }

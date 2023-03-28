@@ -90,6 +90,12 @@ public abstract class Character {
         return collisionArea.getBoundsInLocal().getWidth() != -1;
     }
 
+    public double getDistance(Character other) {
+        double dx = this.getX() - other.getX();
+        double dy = this.getY() - other.getY();
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+
     public Point2D getMovement() {
         return movement;
     }

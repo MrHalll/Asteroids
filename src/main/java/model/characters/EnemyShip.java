@@ -31,10 +31,11 @@ public class EnemyShip extends Character {
         double dy = target.getY() - this.getY();
 
         double angle = Math.toDegrees(Math.atan2(dy,dx));
+        double offAngle = Math.random() * 20;
 
         Projectile projectile = new Projectile((int) this.getX(), (int) this.getY());
         projectile.getShape().setFill(Color.RED);
-        projectile.getShape().setRotate(angle);
+        projectile.getShape().setRotate(angle + offAngle);
         return projectile;
     }
 

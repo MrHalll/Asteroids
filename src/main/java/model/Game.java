@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
+    private int level;
+    private int nbrOfAsteroids;
+    private int nbrOfEnemies;
     private int points;
     private int highScore;
     private boolean isRunning;
@@ -36,6 +39,9 @@ public class Game {
     }
 
     public void start(){
+        level = 1;
+        nbrOfAsteroids = 5;
+        nbrOfEnemies = 0;
         isRunning = true;
         points = 0;
         ship = new Ship(width / 2, height / 2);
@@ -45,19 +51,45 @@ public class Game {
         enemyProjectiles = new ArrayList<>();
         enemyShips = new ArrayList<>();
 
-        //skapar 5 asteroider
-        for (int i = 0; i < 5; i++) {
-            Random rnd = new Random();
-            Asteroid asteroid = new Asteroid(rnd.nextInt(width / 3), rnd.nextInt(height));
-            asteroid.getShape().setStroke(Color.WHITE);
-            asteroids.add(asteroid);
-        }
+        spawnObjects();
     }
     public void stop(){
         isRunning = false;
         if (isHighScore()) {
             addNewHighScore();
         }
+    }
+
+    public void levelUp() {
+        level++;
+        nbrOfAsteroids += 3;
+        nbrOfEnemies += 1;
+
+        spawnObjects();
+    }
+
+    public void spawnObjects() {
+        Random rnd = new Random();
+        for (int i = 0; i < nbrOfAsteroids; i++) {
+            addAsteroid();
+        }
+
+        for (int i = 0; i < nbrOfEnemies; i++) {
+            addEnemyShip();
+        }
+
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getNbrOfAsteroids() {
+        return nbrOfAsteroids;
+    }
+
+    public int getNbrOfEnemies() {
+        return nbrOfEnemies;
     }
 
     public int getHighscore(){
@@ -112,7 +144,13 @@ public class Game {
     }
 
     public Character addAsteroid() {
-        Character asteroid = new AsteroidFactory().createCharacter(width, height);
+        Random rnd = new Random();
+        Character asteroid;
+        AsteroidFactory factory = new AsteroidFactory();
+        do {
+            asteroid = factory.createCharacter(rnd.nextInt(width), rnd.nextInt(height));
+        } while (asteroid.collide(getShip()) || (asteroid.getDistance(getShip()) < 100));
+
         asteroid.getShape().setStroke(Color.WHITE);
         asteroids.add(asteroid);
         return asteroid;
@@ -120,6 +158,7 @@ public class Game {
 
     public Character addEnemyShip() {
         EnemyShip enemyShip = new EnemyShip(width, height);
+        enemyShip.getShape().setFill(Color.RED);
         enemyShips.add(enemyShip);
         return enemyShip;
     }
