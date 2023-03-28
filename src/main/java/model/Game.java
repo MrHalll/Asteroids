@@ -1,7 +1,7 @@
 package model;
 
 import javafx.scene.paint.Color;
-import model.characters.Asteroid;
+import model.characters.*;
 import model.characters.Character;
 import model.characters.Projectile;
 import model.characters.Ship;
@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private int points = 0;
+    private int score = 0;
     private List<Character> asteroids;
-    private List<Character> projectiles;
-    private Character enemyShip;
-    private Character ship;
+    private List<Character> friendlyProjectiles;
+    private List<Character> enemyProjectiles;
+    private List<Character> enemyShips;
+    private Ship ship;
     public int width = 0;
     public int height = 0;
-    private boolean isRunning;
 
     public Game(int width, int height){
         this.width = width;
@@ -27,12 +27,12 @@ public class Game {
     }
 
     public void start(){
-        isRunning = true;
-        points = 0;
         ship = new Ship(width / 2, height / 2);
         ship.getShape().setStroke(Color.WHITE);
         asteroids = new ArrayList<>();
-        projectiles = new ArrayList<>();
+        friendlyProjectiles = new ArrayList<>();
+        enemyProjectiles = new ArrayList<>();
+        enemyShips = new ArrayList<>();
 
         //skapar 5 asteroider
         for (int i = 0; i < 5; i++) {
@@ -43,25 +43,29 @@ public class Game {
         }
     }
     public void stop(){
-        isRunning = false;
+
     }
 
-    public Character addProjectile(){
-        Projectile projectile = new Projectile((int) ship.getX(), (int) ship.getY());
-        projectile.getShape().setFill(Color.WHITE);
-        projectile.getShape().setRotate(ship.getShape().getRotate());
-        projectiles.add(projectile);
+    }
+
+    public Character makePlayerShoot(){
+        Character projectile = getShip().shoot();
+        friendlyProjectiles.add(projectile);
         projectile.accelerate();
         projectile.setMovement(projectile.getMovement().normalize().multiply(3));
         return projectile;
     }
 
-    public int getPoints(){
-        return points;
+    public Character makeEnemyShipShoot(EnemyShip enemyShip) {
+        Character projectile = enemyShip.shoot(getShip());
+        enemyProjectiles.add(projectile);
+        projectile.accelerate();
+        projectile.setMovement(projectile.getMovement().normalize().multiply(3));
+        return projectile;
     }
 
-    public void addPoints(){
-        points = points + 1000;
+    public void addScore(){
+        score = score + 10;
     }
 
     public Character addAsteroid() {
@@ -71,7 +75,13 @@ public class Game {
         return asteroid;
     }
 
-    public Character getShip() {
+    public Character addEnemyShip() {
+        EnemyShip enemyShip = new EnemyShip(width, height);
+        enemyShips.add(enemyShip);
+        return enemyShip;
+    }
+
+    public Ship getShip() {
         return ship;
     }
 
@@ -79,11 +89,15 @@ public class Game {
         return asteroids;
     }
 
-    public List<Character> getProjectiles() {
-        return projectiles;
+    public List<Character> getFriendlyProjectiles() {
+        return friendlyProjectiles;
     }
 
-    public boolean isRunning() {
-        return isRunning;
+    public List<Character> getEnemyProjectiles() {
+        return enemyProjectiles;
+    }
+
+    public List<Character> getEnemyShips() {
+        return enemyShips;
     }
 }
