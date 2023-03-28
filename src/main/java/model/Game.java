@@ -11,13 +11,14 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private int score = 0;
+    private int points = 0;
     private List<Character> asteroids;
     private List<Character> projectiles;
     private Character enemyShip;
     private Character ship;
     public int width = 0;
     public int height = 0;
+    private boolean isRunning;
 
     public Game(int width, int height){
         this.width = width;
@@ -25,6 +26,8 @@ public class Game {
     }
 
     public void start(){
+        isRunning = true;
+        points = 0;
         ship = new Ship(width / 2, height / 2);
         ship.getShape().setStroke(Color.WHITE);
         asteroids = new ArrayList<>();
@@ -39,10 +42,7 @@ public class Game {
         }
     }
     public void stop(){
-
-    }
-    public void reset(){
-
+        isRunning = false;
     }
 
     public Character addProjectile(){
@@ -55,8 +55,12 @@ public class Game {
         return projectile;
     }
 
-    public void addScore(){
-        score = score + 10;
+    public int getPoints(){
+        return points;
+    }
+
+    public void addPoints(){
+        points = points + 1000;
     }
 
     public Character addAsteroid() {
@@ -76,5 +80,9 @@ public class Game {
 
     public List<Character> getProjectiles() {
         return projectiles;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 }
