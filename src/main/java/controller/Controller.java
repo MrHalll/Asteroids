@@ -28,6 +28,10 @@ public class Controller {
         return game.isRunning();
     }
 
+    public int getHighscore(){
+        return game.getHighscore();
+    }
+
     public void stopGame(){
         game.stop();
     }

@@ -8,6 +8,8 @@ import java.util.Random;
 
 public class EnemyShip extends Character {
 
+    private double rotationalMovement;
+
     public EnemyShip(int x, int y) {
         super(new EnemyShipPolygonFactory().createPolygon(), x, y);
 
@@ -19,6 +21,8 @@ public class EnemyShip extends Character {
         for (int i = 0; i < accelerationAmount; i++) {
             accelerate();
         }
+
+        this.rotationalMovement = 5;
 
     }
 
@@ -32,6 +36,12 @@ public class EnemyShip extends Character {
         projectile.getShape().setFill(Color.RED);
         projectile.getShape().setRotate(angle);
         return projectile;
+    }
+
+    @Override
+    public void move() {
+        super.move();
+        super.getShape().setRotate(super.getShape().getRotate() + rotationalMovement);
     }
 
 

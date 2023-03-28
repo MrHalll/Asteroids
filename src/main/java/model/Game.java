@@ -3,7 +3,6 @@ package model;
 import javafx.scene.paint.Color;
 import model.characters.*;
 import model.characters.Character;
-import model.characters.Projectile;
 import model.characters.Ship;
 import model.characters.factories.AsteroidFactory;
 
@@ -17,6 +16,7 @@ import java.util.Random;
 
 public class Game {
     private int points;
+    private int highScore;
     private boolean isRunning;
     private List<Character> asteroids;
     private List<Character> friendlyProjectiles;
@@ -27,18 +27,12 @@ public class Game {
     public int height = 0;
     private FileWriter fileWriter;
     private BufferedReader br;
-    private String fileName = "C:\\Users\\melle\\IdeaProjects\\Asteroids\\src\\main\\resources\\highscore.txt";
+    private String fileName = "src/main/resources/highscore.txt";
 
     public Game(int width, int height){
         this.width = width;
         this.height = height;
-        if(fileWriter == null) {
-            try {
-                fileWriter = new FileWriter(fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        this.highScore = getHighscore();
     }
 
     public void start(){
@@ -62,12 +56,11 @@ public class Game {
     public void stop(){
         isRunning = false;
         if (isHighScore()) {
-            writeHighScore();
+            addNewHighScore();
         }
     }
 
-    public boolean isHighScore() {
-        int highScore = 0;
+    public int getHighscore(){
         try {
             br = new BufferedReader(new FileReader(fileName));
             String line = br.readLine();
@@ -78,10 +71,14 @@ public class Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return highScore;
+    }
+
+    public boolean isHighScore() {
         return points > highScore;
     }
 
-    public void writeHighScore() {
+    public void addNewHighScore() {
         try {
             fileWriter = new FileWriter(fileName);
             fileWriter.write(String.valueOf(points));

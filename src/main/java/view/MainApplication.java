@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class MainApplication extends Application {
     private Controller controller;
-    Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
+    Map<KeyCode, Boolean> pressedKeys;
     public static int WIDTH = 800;
     public static int HEIGHT = 600;
 
@@ -30,38 +30,47 @@ public class MainApplication extends Application {
         controller = new Controller(WIDTH, HEIGHT);
         Pane pane = new Pane();
         pane.setPrefSize(WIDTH, HEIGHT);
-        Scene scene = new Scene(pane);
-        scene.setFill(Color.BLACK);
+        Scene startScene = new Scene(pane);
+        startScene.setFill(Color.BLACK);
         stage.setTitle("Asteroids!");
-        stage.setScene(scene);
+        stage.setScene(startScene);
 
         Text instruction = new Text((double) (200), (double) (300), "PRESS SPACE TO PLAY");
         instruction.setFill(Color.WHITE);
         instruction.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
         pane.getChildren().add(instruction);
 
-        scene.setOnKeyPressed(e -> {
+        startScene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.SPACE) {
-                pane.getChildren().remove(instruction);
+                Pane palyingPane = new Pane();
+                palyingPane.setPrefSize(WIDTH, HEIGHT);
+                Scene playingScene = new Scene(palyingPane);
+                playingScene.setFill(Color.BLACK);
+                stage.setScene(playingScene);
+                controller = new Controller(WIDTH, HEIGHT);
+                pressedKeys =  new HashMap<>();
                 controller.startGame();
                 Text pointLabel = new Text(10, 20, "POINTS: " + controller.getPoints());
+                Text highscoreLabel = new Text(WIDTH - 110, 20, "HIGH SCORE: " + controller.getHighscore());
                 pointLabel.setFill(Color.WHITE);
-                pane.getChildren().add(pointLabel);
-                pane.getChildren().add(controller.getShip().getShape());
+                highscoreLabel.setFill(Color.WHITE);
+                palyingPane.getChildren().add(pointLabel);
+                palyingPane.getChildren().add(highscoreLabel);
+                palyingPane.getChildren().add(controller.getShip().getShape());
 
                 for (Character asteroid : controller.getAsteroids()) {
-                    pane.getChildren().add(asteroid.getShape());
+                    palyingPane.getChildren().add(asteroid.getShape());
                 }
 
                 for (Character enemyShip : controller.getEnemyShips()) {
-                    pane.getChildren().add(enemyShip.getShape());
+                    palyingPane.getChildren().add(enemyShip.getShape());
                 }
 
-                scene.setOnKeyPressed(event -> {
+                playingScene.setOnKeyPressed(event -> {
                     pressedKeys.put(event.getCode(), Boolean.TRUE);
                 });
 
-                scene.setOnKeyReleased(event -> {
+                playingScene.setOnKeyReleased(event -> {
                     pressedKeys.put(event.getCode(), Boolean.FALSE);
                 });
 
@@ -97,7 +106,7 @@ public class MainApplication extends Application {
 
                         if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && controller.getFriendlyProjectiles().size() < 5 && now - lastProjectileTime > projectileDelay) {
                             // we shoot
-                            pane.getChildren().add(controller.makePlayerShoot().getShape());
+                            palyingPane.getChildren().add(controller.makePlayerShoot().getShape());
                             lastProjectileTime = now;
                         }
                         //-----
@@ -113,15 +122,24 @@ public class MainApplication extends Application {
                         //Handle collisions and shooting
                         if (controller.getEnemyProjectiles().size() < 10 && now - lastEnemyProjectileTime > enemyProjectileDelay) {
                             controller.getEnemyShips().forEach(enemyShip -> {
-                                pane.getChildren().add(controller.makeEnemyShipShoot((EnemyShip) enemyShip).getShape());
+                                palyingPane.getChildren().add(controller.makeEnemyShipShoot((EnemyShip) enemyShip).getShape());
                             });
                             lastEnemyProjectileTime = now;
                         }
+
+                        controller.getEnemyShips().forEach(enemyShip -> {
+                            if (controller.getShip().collide(enemyShip)) {
+                                controller.stopGame();
+                                stop();
+                                stage.setScene(startScene);
+                            }
+                        });
 
                         controller.getEnemyProjectiles().forEach(enemyProjectile -> {
                             if (controller.getShip().collide(enemyProjectile)) {
                                 controller.stopGame();
                                 stop();
+                                stage.setScene(startScene);
                             }
                         });
 
@@ -129,6 +147,7 @@ public class MainApplication extends Application {
                             if (controller.getShip().collide(asteroid)) {
                                 controller.stopGame();
                                 stop();
+                                stage.setScene(startScene);
                             }
                         });
 
@@ -155,28 +174,28 @@ public class MainApplication extends Application {
                         //Check if objects are alive
                         controller.getFriendlyProjectiles().stream()
                                 .filter(projectile -> !projectile.isAlive())
-                                .forEach(projectile -> pane.getChildren().remove(projectile.getShape()));
+                                .forEach(projectile -> palyingPane.getChildren().remove(projectile.getShape()));
                         controller.getFriendlyProjectiles().removeAll(controller.getFriendlyProjectiles().stream()
                                 .filter(projectile -> !projectile.isAlive())
                                 .collect(Collectors.toList()));
 
                         controller.getEnemyProjectiles().stream()
                                 .filter(projectile -> !projectile.isAlive())
-                                .forEach(projectile -> pane.getChildren().remove(projectile.getShape()));
+                                .forEach(projectile -> palyingPane.getChildren().remove(projectile.getShape()));
                         controller.getEnemyProjectiles().removeAll(controller.getEnemyProjectiles().stream()
                                 .filter(projectile -> !projectile.isAlive())
                                 .collect(Collectors.toList()));
 
                         controller.getAsteroids().stream()
                                 .filter(asteroid -> !asteroid.isAlive())
-                                .forEach(asteroid -> pane.getChildren().remove(asteroid.getShape()));
+                                .forEach(asteroid -> palyingPane.getChildren().remove(asteroid.getShape()));
                         controller.getAsteroids().removeAll(controller.getAsteroids().stream()
                                 .filter(asteroid -> !asteroid.isAlive())
                                 .collect(Collectors.toList()));
 
                         controller.getEnemyShips().stream()
                                 .filter(enemyShip -> !enemyShip.isAlive())
-                                .forEach(enemyShip -> pane.getChildren().remove(enemyShip.getShape()));
+                                .forEach(enemyShip -> palyingPane.getChildren().remove(enemyShip.getShape()));
                         controller.getEnemyShips().removeAll(controller.getEnemyShips().stream()
                                 .filter(enemyShip -> !enemyShip.isAlive())
                                 .collect(Collectors.toList()));
@@ -185,14 +204,14 @@ public class MainApplication extends Application {
                         if (Math.random() < 0.005) {
                             Character asteroid = controller.addAsteroid();
                             if (!asteroid.collide(controller.getShip())) {
-                                pane.getChildren().add(asteroid.getShape());
+                                palyingPane.getChildren().add(asteroid.getShape());
                             }
                         }
 
                         if (now - lastEnemyShipSpawn > enemyShipSpawnDelay) {
                             Character enemyShip = controller.addEnemyShip();
                             if (!enemyShip.collide(controller.getShip())) {
-                                pane.getChildren().add(enemyShip.getShape());
+                                palyingPane.getChildren().add(enemyShip.getShape());
                                 lastEnemyShipSpawn = now;
                             }
                         }
