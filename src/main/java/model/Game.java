@@ -5,6 +5,7 @@ import model.characters.Asteroid;
 import model.characters.Character;
 import model.characters.Projectile;
 import model.characters.Ship;
+import model.characters.factories.AsteroidFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class Game {
     }
 
     public Character addAsteroid() {
-        Asteroid asteroid = new Asteroid(width, height);
+        Character asteroid = new AsteroidFactory().createCharacter(width, height);
         asteroid.getShape().setStroke(Color.WHITE);
         asteroids.add(asteroid);
         return asteroid;
