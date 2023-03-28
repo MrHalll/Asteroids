@@ -2,18 +2,15 @@ package controller;
 
 import model.Game;
 import model.characters.Character;
+import model.characters.EnemyShip;
 
-
-import java.util.Collection;
 import java.util.List;
 
 public class Controller {
     private Game game;
-    public Controller(int width, int height){
-        game = new Game(width, height);
-    }
 
-    public void startGame(){
+    public void startGame(int width, int height){
+        game = new Game(width, height);
         game.start();
     }
 
@@ -25,8 +22,16 @@ public class Controller {
         return game.addAsteroid();
     }
 
-    public Character addProjectile(){
-        return game.addProjectile();
+    public Character makePlayerShoot(){
+        return game.makePlayerShoot();
+    }
+
+    public Character makeEnemyShipShoot(EnemyShip enemyShip) {
+        return game.makeEnemyShipShoot(enemyShip);
+    }
+
+    public Character addEnemyShip() {
+        return game.addEnemyShip();
     }
 
     public Character getShip() {
@@ -37,19 +42,13 @@ public class Controller {
         return game.getAsteroids();
     }
 
-    public List<Character> getProjectiles() {
-        return game.getProjectiles();
+    public List<Character> getFriendlyProjectiles() {
+        return game.getFriendlyProjectiles();
     }
 
-    public int getPoints() {
-        return game.getPoints();
-    }
+    public List<Character> getEnemyProjectiles() {return game.getEnemyProjectiles();}
 
-    public void addPoints(){
-        game.addPoints();
-    }
-
-    public boolean isRunning(){
-        return game.isRunning();
+    public List<Character> getEnemyShips() {
+        return game.getEnemyShips();
     }
 }
