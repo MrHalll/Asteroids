@@ -7,7 +7,7 @@ import java.util.Random;
 public class Asteroid extends Character {
     private double rotationalMovement;
     public Asteroid(int x, int y) {
-        super(new PolygonFactory().createPolygon(), x, y);
+        super(PolygonFactory.getInstance().createPolygon(), x, y);
 
         Random rnd = new Random();
 

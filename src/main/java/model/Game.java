@@ -6,6 +6,7 @@ import model.characters.Character;
 import model.characters.Ship;
 import model.characters.factories.AsteroidFactory;
 import model.characters.factories.EnemyShipFactory;
+import model.characters.factories.ShipFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,7 +27,7 @@ public class Game {
     private List<Character> friendlyProjectiles;
     private List<Character> enemyProjectiles;
     private List<Character> enemyShips;
-    private Ship ship;
+    private Character ship;
     public int width = 0;
     public int height = 0;
     private FileWriter fileWriter;
@@ -42,10 +43,10 @@ public class Game {
     public void start(){
         level = 1;
         nbrOfAsteroids = 5;
-        nbrOfEnemies = 0;
+        nbrOfEnemies = 8;
         isRunning = true;
         points = 0;
-        ship = new Ship(width / 2, height / 2);
+        ship = ShipFactory.getInstance().createCharacter(width / 2, height / 2);
         ship.getShape().setStroke(Color.WHITE);
         asteroids = new ArrayList<>();
         friendlyProjectiles = new ArrayList<>();
@@ -146,9 +147,8 @@ public class Game {
     public Character addAsteroid() {
         Random rnd = new Random();
         Character asteroid;
-        AsteroidFactory factory = new AsteroidFactory();
         do {
-            asteroid = factory.createCharacter(rnd.nextInt(width), rnd.nextInt(height));
+            asteroid = AsteroidFactory.getInstance().createCharacter(rnd.nextInt(width), rnd.nextInt(height));
         } while (asteroid.collide(getShip()) || (asteroid.getDistance(getShip()) < 100));
 
         asteroid.getShape().setStroke(Color.WHITE);
@@ -159,10 +159,9 @@ public class Game {
     public Character addEnemyShip() {
         Random rnd = new Random();
         Character enemyShip;
-        EnemyShipFactory factory = new EnemyShipFactory();
 
         do {
-            enemyShip = factory.createCharacter(rnd.nextInt(width), rnd.nextInt(height));
+            enemyShip = EnemyShipFactory.getInstance().createCharacter(rnd.nextInt(width), rnd.nextInt(height));
         } while (enemyShip.collide(getShip()) || (enemyShip.getDistance(getShip()) < 100));
 
         enemyShip.getShape().setFill(Color.RED);
@@ -171,7 +170,7 @@ public class Game {
     }
 
     public Ship getShip() {
-        return ship;
+        return (Ship) ship;
     }
 
     public List<Character> getAsteroids() {

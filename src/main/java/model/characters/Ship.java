@@ -1,6 +1,7 @@
 package model.characters;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import model.characters.factories.ProjectileFactory;
 
 public class Ship extends Character {
 
@@ -9,7 +10,7 @@ public class Ship extends Character {
     }
 
     public Character shoot() {
-        Projectile projectile = new Projectile((int) this.getX(), (int) this.getY());
+        Character projectile = ProjectileFactory.getInstance().createCharacter((int) this.getX(), (int) this.getY());
         projectile.getShape().setFill(Color.WHITE);
         projectile.getShape().setRotate(this.getShape().getRotate());
         return projectile;

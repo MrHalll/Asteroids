@@ -4,6 +4,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 public class EnemyShipPolygonFactory {
+    private static EnemyShipPolygonFactory instance;
+    private EnemyShipPolygonFactory(){}
     public Polygon createPolygon() {
         Polygon enemyShipPolygon = new Polygon();
         double c1 = Math.cos(Math.PI * 2 / 5);
@@ -22,5 +24,12 @@ public class EnemyShipPolygonFactory {
         );
         enemyShipPolygon.setFill(Color.RED);
         return enemyShipPolygon;
+    }
+
+    public static EnemyShipPolygonFactory getInstance() {
+        if(instance == null) {
+            instance = new EnemyShipPolygonFactory();
+        }
+        return instance;
     }
 }
