@@ -1,6 +1,6 @@
 package model.characters;
 
-import model.PolygonFactory;
+import model.characters.factories.PolygonFactory;
 
 import java.util.Random;
 

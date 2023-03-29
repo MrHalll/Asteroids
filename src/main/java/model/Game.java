@@ -5,6 +5,7 @@ import model.characters.*;
 import model.characters.Character;
 import model.characters.Ship;
 import model.characters.factories.AsteroidFactory;
+import model.characters.factories.EnemyShipFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -35,7 +36,7 @@ public class Game {
     public Game(int width, int height){
         this.width = width;
         this.height = height;
-        this.highScore = getHighscore();
+        this.highScore = getHighScore();
     }
 
     public void start(){
@@ -69,7 +70,6 @@ public class Game {
     }
 
     public void spawnObjects() {
-        Random rnd = new Random();
         for (int i = 0; i < nbrOfAsteroids; i++) {
             addAsteroid();
         }
@@ -92,7 +92,7 @@ public class Game {
         return nbrOfEnemies;
     }
 
-    public int getHighscore(){
+    public int getHighScore(){
         try {
             br = new BufferedReader(new FileReader(fileName));
             String line = br.readLine();
@@ -157,7 +157,14 @@ public class Game {
     }
 
     public Character addEnemyShip() {
-        EnemyShip enemyShip = new EnemyShip(width, height);
+        Random rnd = new Random();
+        Character enemyShip;
+        EnemyShipFactory factory = new EnemyShipFactory();
+
+        do {
+            enemyShip = factory.createCharacter(rnd.nextInt(width), rnd.nextInt(height));
+        } while (enemyShip.collide(getShip()) || (enemyShip.getDistance(getShip()) < 100));
+
         enemyShip.getShape().setFill(Color.RED);
         enemyShips.add(enemyShip);
         return enemyShip;

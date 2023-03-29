@@ -78,9 +78,6 @@ public class MainApplication extends Application {
                 });
 
                 new AnimationTimer() {
-                    private long lastEnemyShipSpawn = 0;
-                    private long enemyShipSpawnDelay = 20_000_000_000L;  //20 sek
-
                     private long lastProjectileTime = 0;
                     private long projectileDelay = 300_000_000;
 
