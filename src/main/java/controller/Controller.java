@@ -49,7 +49,7 @@ public class Controller {
     }
 
     public int getHighscore(){
-        return game.getHighscore();
+        return game.getHighScore();
     }
 
     public void stopGame(){

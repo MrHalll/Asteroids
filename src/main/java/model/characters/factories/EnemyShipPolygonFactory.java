@@ -1,4 +1,4 @@
-package model;
+package model.characters.factories;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
