@@ -14,7 +14,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.characters.Character;
 import model.characters.EnemyShip;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +26,8 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        controller = new Controller(WIDTH, HEIGHT);
+        controller = Controller.getInstance();
+        controller.createGame(WIDTH, HEIGHT);
         Pane pane = new Pane();
         pane.setPrefSize(WIDTH, HEIGHT);
         Scene startScene = new Scene(pane);
@@ -35,10 +35,14 @@ public class MainApplication extends Application {
         stage.setTitle("Asteroids!");
         stage.setScene(startScene);
 
-        Text instruction = new Text((double) (200), (double) (300), "PRESS SPACE TO PLAY");
+        Text instruction = new Text((double) (WIDTH - 565), (double) (HEIGHT / 2), "PRESS SPACE TO PLAY");
+        Text highscoreLabelStart = new Text(WIDTH - 180, 20, "HIGH SCORE: " + controller.getHighscore());
         instruction.setFill(Color.WHITE);
-        instruction.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
+        highscoreLabelStart.setFill(Color.WHITE);
+        instruction.setFont(Font.font("courier new", FontWeight.BOLD, FontPosture.REGULAR, 30));
+        highscoreLabelStart.setFont(Font.font("courier new", FontWeight.BOLD, FontPosture.REGULAR, 15));
         pane.getChildren().add(instruction);
+        pane.getChildren().add(highscoreLabelStart);
 
         startScene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.SPACE) {
@@ -47,18 +51,21 @@ public class MainApplication extends Application {
                 Scene playingScene = new Scene(playingPane);
                 playingScene.setFill(Color.BLACK);
                 stage.setScene(playingScene);
-                controller = new Controller(WIDTH, HEIGHT);
-                pressedKeys =  new HashMap<>();
+                controller.createGame(WIDTH, HEIGHT);
                 controller.startGame();
+                pressedKeys =  new HashMap<>();
                 Text pointLabel = new Text(10, 20, "POINTS: " + controller.getPoints());
-                Text highscoreLabel = new Text(WIDTH - 110, 20, "HIGH SCORE: " + controller.getHighscore());
-                Text levelLabel = new Text((WIDTH / 2)-20, 20, "LEVEL " + controller.getLevel());
+                Text levelLabel = new Text(pointLabel.getX(), pointLabel.getY() + 25, "LEVEL " + controller.getLevel());
+                Text highscoreLabel = new Text(WIDTH - 180, 20, "HIGH SCORE: " + controller.getHighscore());
                 pointLabel.setFill(Color.WHITE);
-                highscoreLabel.setFill(Color.WHITE);
                 levelLabel.setFill(Color.WHITE);
+                highscoreLabel.setFill(Color.WHITE);
+                pointLabel.setFont(Font.font("courier new", FontWeight.BOLD, FontPosture.REGULAR, 15));
+                levelLabel.setFont(Font.font("courier new", FontWeight.BOLD, FontPosture.REGULAR, 15));
+                highscoreLabel.setFont(Font.font("courier new", FontWeight.BOLD, FontPosture.REGULAR, 15));
                 playingPane.getChildren().add(pointLabel);
-                playingPane.getChildren().add(highscoreLabel);
                 playingPane.getChildren().add(levelLabel);
+                playingPane.getChildren().add(highscoreLabel);
                 playingPane.getChildren().add(controller.getShip().getShape());
 
                 for (Character asteroid : controller.getAsteroids()) {
@@ -79,8 +86,7 @@ public class MainApplication extends Application {
 
                 new AnimationTimer() {
                     private long lastProjectileTime = 0;
-                    private long projectileDelay = 300_000_000;
-
+                    private long projectileDelay = 200_000_000;
                     private long lastEnemyProjectileTime = 0;
                     private long enemyProjectileDelay = 4_000_000_000L;
 
@@ -156,7 +162,7 @@ public class MainApplication extends Application {
                                 if (projectile.collide(asteroid)) {
                                     projectile.setAlive(false);
                                     asteroid.setAlive(false);
-                                    controller.addPoints();
+                                    controller.addPoints(1000);
                                     pointLabel.setText("POINTS: " + controller.getPoints());
                                 }
                             });
@@ -164,12 +170,11 @@ public class MainApplication extends Application {
                                 if (projectile.collide(enemyShip)) {
                                     projectile.setAlive(false);
                                     enemyShip.setAlive(false);
-                                    controller.addPoints();
+                                    controller.addPoints(2000);
                                     pointLabel.setText("POINTS: " + controller.getPoints());
                                 }
                             });
                         });
-
                         //-----
 
                         //Check if objects are alive
@@ -236,23 +241,6 @@ public class MainApplication extends Application {
 
 
                         }
-
-                        //Spawn game objects
-                        /*if (Math.random() < 0.005) {
-                            Character asteroid = controller.addAsteroid();
-                            if (!asteroid.collide(controller.getShip())) {
-                                playingPane.getChildren().add(asteroid.getShape());
-                            }
-                        }
-
-                        if (now - lastEnemyShipSpawn > enemyShipSpawnDelay) {
-                            Character enemyShip = controller.addEnemyShip();
-                            if (!enemyShip.collide(controller.getShip())) {
-                                playingPane.getChildren().add(enemyShip.getShape());
-                                lastEnemyShipSpawn = now;
-                            }
-                        }*/
-                        //-----
                     }
                 }.start();
             }
