@@ -43,7 +43,7 @@ public class Game {
     public void start(){
         level = 1;
         nbrOfAsteroids = 5;
-        nbrOfEnemies = 8;
+        nbrOfEnemies = 0;
         isRunning = true;
         points = 0;
         ship = ShipFactory.getInstance().createCharacter(width / 2, height / 2);
