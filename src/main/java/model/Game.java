@@ -77,19 +77,10 @@ public class Game {
         for (int i = 0; i < nbrOfEnemies; i++) {
             addEnemyShip();
         }
-
     }
 
     public int getLevel() {
         return level;
-    }
-
-    public int getNbrOfAsteroids() {
-        return nbrOfAsteroids;
-    }
-
-    public int getNbrOfEnemies() {
-        return nbrOfEnemies;
     }
 
     public int getHighScore(){
@@ -188,8 +179,5 @@ public class Game {
 
     public List<Character> getEnemyShips() {
         return enemyShips;
-    }
-    public boolean isRunning() {
-        return isRunning;
     }
 }

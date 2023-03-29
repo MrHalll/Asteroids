@@ -14,7 +14,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.characters.Character;
 import model.characters.EnemyShip;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        controller = new Controller();
+        controller = Controller.getInstance();
         controller.createGame(WIDTH, HEIGHT);
         Pane pane = new Pane();
         pane.setPrefSize(WIDTH, HEIGHT);
@@ -87,8 +86,7 @@ public class MainApplication extends Application {
 
                 new AnimationTimer() {
                     private long lastProjectileTime = 0;
-                    private long projectileDelay = 300_000_000;
-
+                    private long projectileDelay = 200_000_000;
                     private long lastEnemyProjectileTime = 0;
                     private long enemyProjectileDelay = 4_000_000_000L;
 
