@@ -139,8 +139,8 @@ public class Game {
         return points;
     }
 
-    public void addPoints(){
-        points = points + 1000;
+    public void addPoints(int pointsToAdd){
+        points += pointsToAdd;
     }
 
     public Character addAsteroid() {

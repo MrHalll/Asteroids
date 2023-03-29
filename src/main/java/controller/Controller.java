@@ -9,7 +9,7 @@ import java.util.List;
 public class Controller {
     private Game game;
 
-    public Controller(int width, int height){
+    public void createGame(int width, int height){
         game = new Game(width, height);
     }
     public void startGame(){
@@ -40,8 +40,8 @@ public class Controller {
         return game.getPoints();
     }
 
-    public void addPoints(){
-        game.addPoints();
+    public void addPoints(int points){
+        game.addPoints(points);
     }
 
     public boolean isRunning(){
