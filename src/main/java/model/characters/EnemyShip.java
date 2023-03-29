@@ -1,7 +1,7 @@
 package model.characters;
 
 import javafx.scene.paint.Color;
-import model.characters.factories.EnemyShipPolygonFactory;
+import model.characters.factories.shapes.EnemyShipPolygonFactory;
 import model.characters.factories.ProjectileFactory;
 
 import java.util.Random;

@@ -146,6 +146,7 @@ public class MainApplication extends Application {
                                 controller.stopGame();
                                 stop();
                                 stage.setScene(startScene);
+                                highscoreLabelStart.setText("HIGH SCORE: " + controller.getHighscore());
                             }
                         });
 
@@ -154,6 +155,7 @@ public class MainApplication extends Application {
                                 controller.stopGame();
                                 stop();
                                 stage.setScene(startScene);
+                                highscoreLabelStart.setText("HIGH SCORE: " + controller.getHighscore());
                             }
                         });
 
@@ -238,8 +240,6 @@ public class MainApplication extends Application {
                                     playingPane.getChildren().add(enemyShip.getShape());
                                 }
                             });
-
-
                         }
                     }
                 }.start();

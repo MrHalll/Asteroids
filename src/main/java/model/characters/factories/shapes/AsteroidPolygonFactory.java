@@ -1,12 +1,12 @@
-package model.characters.factories;
+package model.characters.factories.shapes;
 
 import javafx.scene.shape.Polygon;
 
 import java.util.Random;
 
-public class PolygonFactory {
-    private static PolygonFactory instance;
-    private PolygonFactory() {}
+public class AsteroidPolygonFactory {
+    private static AsteroidPolygonFactory instance;
+    private AsteroidPolygonFactory() {}
     public Polygon createPolygon() {
         Random rnd = new Random();
 
@@ -33,9 +33,9 @@ public class PolygonFactory {
         return polygon;
     }
 
-    public static PolygonFactory getInstance() {
+    public static AsteroidPolygonFactory getInstance() {
         if (instance == null) {
-            instance = new PolygonFactory();
+            instance = new AsteroidPolygonFactory();
         }
         return instance;
     }

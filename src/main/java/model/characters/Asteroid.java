@@ -1,13 +1,13 @@
 package model.characters;
 
-import model.characters.factories.PolygonFactory;
+import model.characters.factories.shapes.AsteroidPolygonFactory;
 
 import java.util.Random;
 
 public class Asteroid extends Character {
     private double rotationalMovement;
     public Asteroid(int x, int y) {
-        super(PolygonFactory.getInstance().createPolygon(), x, y);
+        super(AsteroidPolygonFactory.getInstance().createPolygon(), x, y);
 
         Random rnd = new Random();
 
