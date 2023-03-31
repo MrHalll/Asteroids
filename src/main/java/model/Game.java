@@ -1,5 +1,6 @@
 package model;
 
+import javafx.beans.InvalidationListener;
 import javafx.scene.paint.Color;
 import model.characters.*;
 import model.characters.Character;
@@ -37,7 +38,6 @@ public class Game {
     public Game(int width, int height){
         this.width = width;
         this.height = height;
-        this.highScore = getHighScore();
     }
 
     public void start(){
@@ -46,13 +46,13 @@ public class Game {
         nbrOfEnemies = 0;
         isRunning = true;
         points = 0;
+        highScore = getHighScore();
         ship = ShipFactory.getInstance().createCharacter(width / 2, height / 2);
         ship.getShape().setStroke(Color.WHITE);
         asteroids = new ArrayList<>();
         friendlyProjectiles = new ArrayList<>();
         enemyProjectiles = new ArrayList<>();
         enemyShips = new ArrayList<>();
-
         spawnObjects();
     }
     public void stop(){
@@ -66,7 +66,6 @@ public class Game {
         level++;
         nbrOfAsteroids += 3;
         nbrOfEnemies += 1;
-
         spawnObjects();
     }
 
@@ -179,4 +178,5 @@ public class Game {
     public List<Character> getEnemyShips() {
         return enemyShips;
     }
+
 }

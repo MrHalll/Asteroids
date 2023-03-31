@@ -12,21 +12,27 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Observable;
+import model.Observer;
 import model.characters.Character;
 import model.characters.EnemyShip;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MainApplication extends Application {
+public class MainApplication extends Application implements Observer {
     private Controller controller;
     Map<KeyCode, Boolean> pressedKeys;
     public static int WIDTH = 800;
     public static int HEIGHT = 600;
+    private int highscore;
+    private int level;
+    private int points;
 
     @Override
     public void start(Stage stage) throws IOException {
         controller = Controller.getInstance();
+        controller.addObserver(this);
         controller.createGame(WIDTH, HEIGHT);
         Pane pane = new Pane();
         pane.setPrefSize(WIDTH, HEIGHT);
@@ -36,7 +42,7 @@ public class MainApplication extends Application {
         stage.setScene(startScene);
 
         Text instruction = new Text((double) (WIDTH - 565), (double) (HEIGHT / 2), "PRESS SPACE TO PLAY");
-        Text highscoreLabelStart = new Text(WIDTH - 180, 20, "HIGH SCORE: " + controller.getHighscore());
+        Text highscoreLabelStart = new Text(WIDTH - 180, 20, "HIGH SCORE: " + highscore);
         instruction.setFill(Color.WHITE);
         highscoreLabelStart.setFill(Color.WHITE);
         instruction.setFont(Font.font("courier new", FontWeight.BOLD, FontPosture.REGULAR, 30));
@@ -54,9 +60,9 @@ public class MainApplication extends Application {
                 controller.createGame(WIDTH, HEIGHT);
                 controller.startGame();
                 pressedKeys =  new HashMap<>();
-                Text pointLabel = new Text(10, 20, "POINTS: " + controller.getPoints());
-                Text levelLabel = new Text(pointLabel.getX(), pointLabel.getY() + 25, "LEVEL " + controller.getLevel());
-                Text highscoreLabel = new Text(WIDTH - 180, 20, "HIGH SCORE: " + controller.getHighscore());
+                Text pointLabel = new Text(10, 20, "POINTS: " + points);
+                Text levelLabel = new Text(pointLabel.getX(), pointLabel.getY() + 25, "LEVEL " + level);
+                Text highscoreLabel = new Text(WIDTH - 180, 20, "HIGH SCORE: " + highscore);
                 pointLabel.setFill(Color.WHITE);
                 levelLabel.setFill(Color.WHITE);
                 highscoreLabel.setFill(Color.WHITE);
@@ -146,7 +152,7 @@ public class MainApplication extends Application {
                                 controller.stopGame();
                                 stop();
                                 stage.setScene(startScene);
-                                highscoreLabelStart.setText("HIGH SCORE: " + controller.getHighscore());
+                                highscoreLabelStart.setText("HIGH SCORE: " + highscore);
                             }
                         });
 
@@ -155,7 +161,7 @@ public class MainApplication extends Application {
                                 controller.stopGame();
                                 stop();
                                 stage.setScene(startScene);
-                                highscoreLabelStart.setText("HIGH SCORE: " + controller.getHighscore());
+                                highscoreLabelStart.setText("HIGH SCORE: " + highscore);
                             }
                         });
 
@@ -165,7 +171,7 @@ public class MainApplication extends Application {
                                     projectile.setAlive(false);
                                     asteroid.setAlive(false);
                                     controller.addPoints(1000);
-                                    pointLabel.setText("POINTS: " + controller.getPoints());
+                                    pointLabel.setText("POINTS: " + points);
                                 }
                             });
                             controller.getEnemyShips().forEach(enemyShip -> {
@@ -173,7 +179,7 @@ public class MainApplication extends Application {
                                     projectile.setAlive(false);
                                     enemyShip.setAlive(false);
                                     controller.addPoints(2000);
-                                    pointLabel.setText("POINTS: " + controller.getPoints());
+                                    pointLabel.setText("POINTS: " + points);
                                 }
                             });
                         });
@@ -250,5 +256,12 @@ public class MainApplication extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    @Override
+    public void update(Observable observable) {
+        points = controller.getPoints();
+        level = controller.getLevel();
+        highscore = controller.getHighscore();
     }
 }
